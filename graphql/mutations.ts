@@ -11,17 +11,22 @@ export const LOGIN_USER = gql`
 `;
 
 export const ADD_ITEM_TO_CART = gql`
-  mutation AddItemToCart($productId: ID!, $quantity: Int!) {
-    addItem(input: { productId: $productId, quantity: $quantity }) {
+  mutation AddItem($input: AddItemArgs!) {
+    addItem(input: $input) {
       _id
+      hash
       items {
         _id
         quantity
         product {
+          _id
           title
           cost
+          availableQuantity
         }
       }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -35,6 +40,7 @@ export const REMOVE_ITEM_FROM_CART = gql`
         quantity
         product {
           title
+          cost
         }
       }
     }
@@ -52,6 +58,7 @@ export const UPDATE_ITEM_QUANTITY = gql`
         quantity
         product {
           title
+          cost
         }
       }
     }

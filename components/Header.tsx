@@ -1,4 +1,3 @@
-// components/Header.tsx
 import React from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";

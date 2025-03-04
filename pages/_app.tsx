@@ -5,11 +5,11 @@ import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
 import client from "@/graphql/apollo-client";
 import { useRouter } from "next/router";
-import { CartProvider } from "../context/CartContext"; 
+import { CartProvider } from "../context/CartContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
-  const noLayoutRoutes = ["/login"]; 
+  const noLayoutRoutes = ["/login"];
 
   return (
     <ApolloProvider client={client}>

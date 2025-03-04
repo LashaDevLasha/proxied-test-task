@@ -1,23 +1,19 @@
+import React from "react";
 import Main from "@/components/Main";
 import client from "@/graphql/apollo-client";
 import { GET_PRODUCTS } from "@/graphql/queries";
 import { GetServerSidePropsContext } from "next";
+import { ProductType } from "@/types/types";
 
 type Props = {
-  data: Array<{
-    _id: string;
-    title: string;
-    cost: number;
-    availableQuantity: number;
-    isArchived: boolean;
-    createdAt: string;
-    updatedAt: string;
-  }>;
+  data: ProductType[];
 };
+
 export default function Home({ data }: Props) {
+
   return (
     <div>
-      <Main data={data} />
+      <Main productsData={data} />
     </div>
   );
 }
@@ -33,8 +29,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
     },
   });
-
-  // console.log("Cart data:", data);
 
   return {
     props: {
