@@ -221,7 +221,6 @@ footer {
   margin-top: 20px;
 }
 
-/* Spinner styles */
 .spinner {
   position: fixed;
   top: 50%;
@@ -246,7 +245,6 @@ footer {
   100% { transform: rotate(360deg); }
 }
 
-/* Error notification styles */
 .error-notification {
   position: fixed;
   top: 10px;

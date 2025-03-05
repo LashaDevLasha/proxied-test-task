@@ -17,6 +17,7 @@ export const useRemoveItem = () => {
         const updatedCart = data.removeItem;
         setCart(updatedCart.items);
         api.success({
+          placement: "top",
           message: "Item Removed",
           description: `The item has been removed from your cart.`,
         });
@@ -26,6 +27,7 @@ export const useRemoveItem = () => {
     onError: (error: ApolloError) => {
       const err = JSON.parse(error.message);
       api.error({
+        placement: "top",
         message: "Error",
         description: err[0]?.message,
       });
@@ -38,6 +40,7 @@ export const useRemoveItem = () => {
 
     if (!validation.success) {
       api.error({
+        placement: "top",
         message: "Validation Error",
         description: validation.error.errors[0].message,
       });

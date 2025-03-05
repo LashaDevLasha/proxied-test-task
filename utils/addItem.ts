@@ -18,6 +18,7 @@ export const useAddItem = () => {
         const updatedCart = data.addItem;
         setCart(updatedCart.items);
         api.success({
+          placement: "top",
           message: "Item Added",
           description: `The item has been successfully added to your cart.`,
         });
@@ -27,6 +28,7 @@ export const useAddItem = () => {
     onError: (error: ApolloError) => {
       const err = JSON.parse(error.message);
       api.error({
+        placement: "top",
         message: "Error",
         description: err[0]?.message,
       });
@@ -43,6 +45,7 @@ export const useAddItem = () => {
     if (!validation.success) {
       validation.error.errors.forEach((err) => {
         api.error({
+          placement: "top",
           message: "Validation Error",
           description: err.message,
         });

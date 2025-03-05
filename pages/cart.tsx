@@ -3,10 +3,12 @@ import { useCart } from "@/context/CartContext";
 import { GetServerSidePropsContext } from "next";
 import { GET_CART } from "@/graphql/queries";
 import client from "@/graphql/apollo-client";
-import { useRemoveItem } from "@/utils/removeItem"; 
-import { useUpdateQuantity } from "@/utils/updateQuantity"; 
+import { useRemoveItem } from "@/utils/removeItem";
+import { useUpdateQuantity } from "@/utils/updateQuantity";
+import { Spin } from "antd"; // Import Ant Design's notification
+import { useSubscription } from "@apollo/client"; // Import useSubscription hook
 import type { Cart } from "@/types/types";
-import { Spin } from "antd";
+import { CART_ITEM_UPDATE } from "@/graphql/cartSubscriptions";
 
 type Props = {
   cartData: Cart;
@@ -14,15 +16,32 @@ type Props = {
 
 const Cart = ({ cartData }: Props) => {
   const { setCart, cart } = useCart();
-  const { removeItemFromCart, loadingItemId: loadingRemoveId, contextHolder: removeContextHolder } = useRemoveItem();
-  const { updateItemQuantity, loadingItemId: loadingUpdateId, contextHolder: updateContextHolder } = useUpdateQuantity();
+  const {
+    removeItemFromCart,
+    loadingItemId: loadingRemoveId,
+    contextHolder: removeContextHolder,
+  } = useRemoveItem();
+  const {
+    updateItemQuantity,
+    loadingItemId: loadingUpdateId,
+    contextHolder: updateContextHolder,
+  } = useUpdateQuantity();
 
   const contextHolder = (
     <>
-      {removeContextHolder}
-      {updateContextHolder}
+      {React.cloneElement(removeContextHolder, { key: 'remove-context' })}
+      {React.cloneElement(updateContextHolder, { key: 'update-context' })}
     </>
   );
+  
+
+  const { data: subscriptionData } = useSubscription(CART_ITEM_UPDATE);
+
+  useEffect(() => {
+    if (subscriptionData && subscriptionData.cartItemUpdate) {
+      console.log(subscriptionData);
+    }
+  }, [subscriptionData, cart, setCart]);
 
   useEffect(() => {
     if (cartData && cartData.items) {
@@ -48,7 +67,9 @@ const Cart = ({ cartData }: Props) => {
                 <div className="quantity-controls">
                   <button
                     className="quantity-btn"
-                    onClick={() => updateItemQuantity(item._id, item.quantity - 1)}
+                    onClick={() =>
+                      updateItemQuantity(item._id, item.quantity - 1)
+                    }
                     disabled={loadingUpdateId === item._id}
                   >
                     -
@@ -56,7 +77,9 @@ const Cart = ({ cartData }: Props) => {
                   <p>{item.quantity}</p>
                   <button
                     className="quantity-btn"
-                    onClick={() => updateItemQuantity(item._id, item.quantity + 1)}
+                    onClick={() =>
+                      updateItemQuantity(item._id, item.quantity + 1)
+                    }
                     disabled={loadingUpdateId === item._id}
                   >
                     +

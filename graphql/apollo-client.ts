@@ -1,5 +1,8 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
+import { ApolloClient, InMemoryCache, HttpLink, from, split } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { createClient } from "graphql-ws";
 import Cookies from "js-cookie";
 
 const authLink = setContext((_, { headers }) => {
@@ -15,16 +18,47 @@ const authLink = setContext((_, { headers }) => {
   return { headers };
 });
 
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: "ws://take-home-be.onrender.com/api",
+    connectionParams: () => {
+      const token = Cookies.get("authToken");
+      console.log('Sending connection params:', { authToken: token });
+      return {
+        authToken: token,
+      };
+    },
+    on: {
+      connected: () => {
+        console.log("WebSocket connection established");
+      },
+      error: (error) => {
+        console.error("WebSocket error:", error);
+      },
+    },
+  })
+);
+
 const httpLink = new HttpLink({
   uri: "https://take-home-be.onrender.com/api",
   credentials: "same-origin",
 });
 
-const link = from([authLink, httpLink]);
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink,
+);
 
 const client = new ApolloClient({
   ssrMode: true,
-  link,
+  link: from([authLink, splitLink]),
   cache: new InMemoryCache(),
 });
 
