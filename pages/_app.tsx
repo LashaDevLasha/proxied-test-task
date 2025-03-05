@@ -6,6 +6,7 @@ import { ApolloProvider } from "@apollo/client";
 import client from "@/graphql/apollo-client";
 import { useRouter } from "next/router";
 import { CartProvider } from "../context/CartContext";
+import { SubscriptionProvider } from "@/context/SubscriptionContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -14,11 +15,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ApolloProvider client={client}>
       <CartProvider>
-        <div className="container">
-          {!noLayoutRoutes.includes(router.pathname) && <Header />}
-          <Component {...pageProps} />
-          {!noLayoutRoutes.includes(router.pathname) && <Footer />}
-        </div>
+        <SubscriptionProvider> 
+          <div className="container">
+            {!noLayoutRoutes.includes(router.pathname) && <Header />}
+            <Component {...pageProps} />
+            {!noLayoutRoutes.includes(router.pathname) && <Footer />}
+          </div>
+        </SubscriptionProvider>
       </CartProvider>
     </ApolloProvider>
   );

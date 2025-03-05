@@ -23,7 +23,6 @@ const wsLink = new GraphQLWsLink(
     url: "ws://take-home-be.onrender.com/api",
     connectionParams: () => {
       const token = Cookies.get("authToken");
-      console.log('Sending connection params:', { authToken: token });
       return {
         authToken: token,
       };

@@ -1,4 +1,3 @@
-
 export type ProductType = {
   _id: string;
   title: string;
@@ -21,3 +20,18 @@ export type Cart = {
   items: CartItem[];
 };
 
+export type CartItemUpdatePayload = {
+  _id: string;
+  cartId: string;
+  product: ProductType;
+  quantity: number;
+};
+
+export type CartItemUpdate = {
+  event: string;
+  payload: CartItemUpdatePayload;
+};
+
+export type SubscriptionData = {
+  cartItemUpdate: CartItemUpdate;
+};
